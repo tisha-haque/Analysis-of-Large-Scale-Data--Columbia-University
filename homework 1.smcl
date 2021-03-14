@@ -1,0 +1,376 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/Users/tishahaque/Documents/Columbia 2020-2021/Large Scale Data/homework 1.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}27 Sep 2020, 21:32:37
+
+{com}. use "/Users/tishahaque/Documents/Columbia 2020-2021/Large Scale Data/du5301.dta", clear
+
+. 
+. 
+. ***describe and summarize the two variables height and weight we are interested in***
+
+. des n2bm0407 n2bm0422
+
+              {txt}storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:n2bm0407       }{txt}{bind: long    }{bind:{txt}%12.0g    }{space 1}{bind:         }{bind:  }{res}{res}weight{p_end}
+{p 0 48}{bind:n2bm0422       }{txt}{bind: int     }{bind:{txt}%8.0g     }{space 1}{bind:n2bm0422 }{bind:  }{res}{res}height (ages 2 and over){p_end}
+
+{com}. sum n2bm0407 n2bm0422
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}n2bm0407 {c |}{res}     20,322    12148.15    5897.228       1175      38775
+{txt}{space 4}n2bm0422 {c |}{res}     20,322    625.4804    134.0555        302        999
+
+{com}. 
+. ***put in decimal places***
+
+. gen height = n2bm0422/10
+{err}variable {bf}height{sf} already defined
+{txt}{search r(110), local:r(110);}
+
+{com}. gen weight = n2bm0407/100 
+{err}variable {bf}weight{sf} already defined
+{txt}{search r(110), local:r(110);}
+
+{com}. 
+. ***assign missing values. Use the original variable for the missings***
+
+. replace height = . if n2bm0422 == 999
+{txt}(0 real changes made)
+
+{com}. sum weight height
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}weight {c |}{res}     20,322    121.4815    58.97228      11.75     387.75
+{txt}{space 6}height {c |}{res}     19,260    60.48845    10.41357       30.2       78.7
+
+{com}. 
+. ***create our measure of BMI***
+
+. gen bmi = (weight / height^2)*703
+{err}variable {bf}bmi{sf} already defined
+{txt}{search r(110), local:r(110);}
+
+{com}. sum weight height bmi
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}weight {c |}{res}     20,322    121.4815    58.97228      11.75     387.75
+{txt}{space 6}height {c |}{res}     19,260    60.48845    10.41357       30.2       78.7
+{txt}{space 9}bmi {c |}{res}     19,260    22.66872    5.846852   10.75105   61.08948
+
+{com}. 
+. *** QUESTION 1 ***
+
+. 
+. ***describe and summarize the n2bm0047 variable we are interested in***
+
+. des n2bm0047 
+
+              {txt}storage   display    value
+variable name   type    format     label      variable label
+{hline}
+{p 0 48}{res}{bind:n2bm0047       }{txt}{bind: byte    }{bind:{txt}%8.0g     }{space 1}{bind:n2bm0047 }{bind:  }{res}{res}q3 age-years (at interview){p_end}
+
+{com}. sum n2bm0047
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}n2bm0047 {c |}{res}     20,322    31.12794    23.91481          0         74
+
+{com}. 
+. ***assign missing values. ***
+
+. replace bmi= . if n2bm0047  < 20 
+{txt}(7,396 real changes made, 7,396 to missing)
+
+{com}. 
+. ***create our measure of a new BMI with only those who are 20 years or older ***
+
+. sum weight height bmi 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}weight {c |}{res}     20,322    121.4815    58.97228      11.75     387.75
+{txt}{space 6}height {c |}{res}     19,260    60.48845    10.41357       30.2       78.7
+{txt}{space 9}bmi {c |}{res}     11,864    25.56776    4.984057   12.39599   61.08948
+
+{com}. 
+. *** QUESTION 2 ***
+
+. 
+. *** Create a dummy variable for those who live in the city ***
+
+. *** Code - 1 Live in Central City ***
+
+. *** Code - 0 Live outside Central City ***
+
+. gen location = 1
+
+. replace location = 0 if n2bm0012  != 1 
+{txt}(14,613 real changes made)
+
+{com}. sum location 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}location {c |}{res}     20,322    .2809271     .449463          0          1
+
+{com}. *** QUESTION 3 *** 
+
+. sum bmi if location == 1  
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}bmi {c |}{res}      3,265    25.56231     5.13604   12.39599   59.90059
+
+{com}. sum bmi if location != 1  
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}bmi {c |}{res}      8,599    25.56983    4.925424   14.12748   61.08948
+
+{com}. *** QUESTION 4 *** 
+
+. ttest bmi, by(location) 
+
+{txt}Two-sample t test with equal variances
+{hline 9}{c TT}{hline 68}
+   Group{col 10}{c |}{col 16}Obs{col 27}Mean{col 35}Std. Err.{col 47}Std. Dev.{col 59}[95% Conf. Interval]
+{hline 9}{c +}{hline 68}
+       0 {c |}{res}{col 12}  8,599{col 22} 25.56983{col 34} .0531153{col 46} 4.925424{col 58} 25.46571{col 70} 25.67395
+       {txt}1 {c |}{res}{col 12}  3,265{col 22} 25.56231{col 34} .0898849{col 46}  5.13604{col 58} 25.38607{col 70} 25.73854
+{txt}{hline 9}{c +}{hline 68}
+combined {c |}{res}{col 12} 11,864{col 22} 25.56776{col 34}  .045758{col 46} 4.984057{col 58} 25.47806{col 70} 25.65745
+{txt}{hline 9}{c +}{hline 68}
+    diff {c |}{res}{col 22} .0075222{col 34} .1024593{col 58}-.1933147{col 70} .2083592
+{txt}{hline 9}{c BT}{hline 68}
+    diff = mean({res}0{txt}) - mean({res}1{txt})                                      t = {res}  0.0734
+{txt}Ho: diff = 0                                     degrees of freedom = {res}   11862
+
+    {txt}Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = {res}0.5293         {txt}Pr(|T| > |t|) = {res}0.9415          {txt}Pr(T > t) = {res}0.4707
+
+{com}. regress bmi location 
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    11,864
+{txt}{hline 13}{c +}{hline 34}   F(1, 11862)     = {res}     0.01
+{txt}       Model {c |} {res} .133904281         1  .133904281   {txt}Prob > F        ={res}    0.9415
+{txt}    Residual {c |} {res} 294686.558    11,862  24.8429066   {txt}R-squared       ={res}    0.0000
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}   -0.0001
+{txt}       Total {c |} {res} 294686.692    11,863  24.8408238   {txt}Root MSE        =   {res} 4.9843
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         bmi{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}location {c |}{col 14}{res}{space 2}-.0075222{col 26}{space 2} .1024593{col 37}{space 1}   -0.07{col 46}{space 3}0.941{col 54}{space 4}-.2083592{col 67}{space 3} .1933147
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 25.56983{col 26}{space 2} .0537498{col 37}{space 1}  475.72{col 46}{space 3}0.000{col 54}{space 4} 25.46447{col 67}{space 3} 25.67519
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{com}. *** Create a dummy variable for Male  *** 
+
+. *** Code - 1 Males *** 
+
+. *** Code - 0 Females ***
+
+. gen sex = 1 
+
+. replace sex = 0 if n2bm0055 != 1
+{txt}(10,339 real changes made)
+
+{com}. sum sex 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 9}sex {c |}{res}     20,322     .491241    .4999356          0          1
+
+{com}. 
+. *** Create a dummy variable for those born in any of the 51 states *** 
+
+. *** Code 01-56 as those born in the 51 states; states = 1 ***
+
+. *** Code 57-97 as not those born in the 51 states; states = 0 ***
+
+. gen states = 1 
+
+. replace states = . if n2bm0057 == 88
+{txt}(236 real changes made, 236 to missing)
+
+{com}. replace states = 0 if  n2bm0057 > = 57 
+{txt}(1,385 real changes made)
+
+{com}. sum states 
+
+{txt}    Variable {c |}        Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 6}states {c |}{res}     20,322    .9318473     .252014          0          1
+
+{com}. 
+. *** Run the regression model with addition variables *** 
+
+. regress bmi location sex states n2bm0047 
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    11,864
+{txt}{hline 13}{c +}{hline 34}   F(4, 11859)     = {res}    92.89
+{txt}       Model {c |} {res} 8952.24378         4  2238.06094   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 285734.449    11,859  24.0943122   {txt}R-squared       ={res}    0.0304
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0301
+{txt}       Total {c |} {res} 294686.692    11,863  24.8408238   {txt}Root MSE        =   {res} 4.9086
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}         bmi{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 4}location {c |}{col 14}{res}{space 2} .0256203{col 26}{space 2} .1013937{col 37}{space 1}    0.25{col 46}{space 3}0.801{col 54}{space 4}-.1731279{col 67}{space 3} .2243685
+{txt}{space 9}sex {c |}{col 14}{res}{space 2}-.0994821{col 26}{space 2} .0902744{col 37}{space 1}   -1.10{col 46}{space 3}0.270{col 54}{space 4}-.2764347{col 67}{space 3} .0774706
+{txt}{space 6}states {c |}{col 14}{res}{space 2} .1927266{col 26}{space 2} .1625425{col 37}{space 1}    1.19{col 46}{space 3}0.236{col 54}{space 4}-.1258834{col 67}{space 3} .5113366
+{txt}{space 4}n2bm0047 {c |}{col 14}{res}{space 2} .0504489{col 26}{space 2} .0026231{col 37}{space 1}   19.23{col 46}{space 3}0.000{col 54}{space 4} .0453072{col 67}{space 3} .0555905
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 23.02512{col 26}{space 2} .2122849{col 37}{space 1}  108.46{col 46}{space 3}0.000{col 54}{space 4}   22.609{col 67}{space 3} 23.44123
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{com}. *** QUESTION 7 *** 
+
+. *** create a continuous dummy variable for years of schooling *** 
+
+. 
+. gen school = 0 if n2bm0062 ==00
+{txt}(15,971 missing values generated)
+
+{com}. replace school = . if n2bm0062 == 88 
+{txt}(0 real changes made)
+
+{com}. replace school = 1 if n2bm0062 == 21 
+{txt}(335 real changes made)
+
+{com}. replace school = 2 if n2bm0062 == 22 
+{txt}(351 real changes made)
+
+{com}. replace school = 3 if n2bm0062 == 23 
+{txt}(453 real changes made)
+
+{com}. replace school = 4 if n2bm0062 == 24
+{txt}(461 real changes made)
+
+{com}. replace school = 5 if n2bm0062 == 25
+{txt}(446 real changes made)
+
+{com}. replace school = 6 if n2bm0062 == 26
+{txt}(649 real changes made)
+
+{com}. replace school = 7 if n2bm0062 == 27
+{txt}(647 real changes made)
+
+{com}. replace school = 8 if n2bm0062 == 28
+{txt}(1,469 real changes made)
+
+{com}. replace school = 9 if n2bm0062 == 31
+{txt}(912 real changes made)
+
+{com}. replace school = 10 if n2bm0062 == 32
+{txt}(1,151 real changes made)
+
+{com}. replace school = 11 if n2bm0062 == 33
+{txt}(894 real changes made)
+
+{com}. replace school = 12 if n2bm0062 == 34
+{txt}(4,340 real changes made)
+
+{com}. replace school = 13 if n2bm0062 == 41
+{txt}(777 real changes made)
+
+{com}. replace school = 14 if n2bm0062 == 42
+{txt}(853 real changes made)
+
+{com}. replace school = 15 if n2bm0062 == 43
+{txt}(411 real changes made)
+
+{com}. replace school = 16 if n2bm0062 == 44
+{txt}(920 real changes made)
+
+{com}. replace school = 17 if n2bm0062 == 45
+{txt}(758 real changes made)
+
+{com}.  
+. *** Generate dummy variable for schooling completed***
+
+. 
+. gen school_complete = 0
+
+. replace school_complete = school if n2bm0064 ==1
+{txt}(10,215 real changes made, 2 to missing)
+
+{com}. replace school_complete = school-1 if n2bm0064 ==2
+{txt}(5,240 real changes made, 4 to missing)
+
+{com}. 
+.  
+. *** Regression with the new variable school_completed *** 
+
+. regress bmi location sex states n2bm0047 school_complete
+
+{txt}      Source {c |}       SS           df       MS      Number of obs   ={res}    11,861
+{txt}{hline 13}{c +}{hline 34}   F(5, 11855)     = {res}    88.38
+{txt}       Model {c |} {res} 10587.0202         5  2117.40403   {txt}Prob > F        ={res}    0.0000
+{txt}    Residual {c |} {res} 284022.842    11,855  23.9580634   {txt}R-squared       ={res}    0.0359
+{txt}{hline 13}{c +}{hline 34}   Adj R-squared   ={res}    0.0355
+{txt}       Total {c |} {res} 294609.862    11,860  24.8406292   {txt}Root MSE        =   {res} 4.8947
+
+{txt}{hline 16}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}            bmi{col 17}{c |}      Coef.{col 29}   Std. Err.{col 41}      t{col 49}   P>|t|{col 57}     [95% Con{col 70}f. Interval]
+{hline 16}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 7}location {c |}{col 17}{res}{space 2}  .024229{col 29}{space 2} .1011133{col 40}{space 1}    0.24{col 49}{space 3}0.811{col 57}{space 4}-.1739697{col 70}{space 3} .2224276
+{txt}{space 12}sex {c |}{col 17}{res}{space 2}-.0890053{col 29}{space 2} .0900367{col 40}{space 1}   -0.99{col 49}{space 3}0.323{col 57}{space 4}-.2654919{col 70}{space 3} .0874814
+{txt}{space 9}states {c |}{col 17}{res}{space 2} .3897536{col 29}{space 2} .1638939{col 40}{space 1}    2.38{col 49}{space 3}0.017{col 57}{space 4} .0684946{col 70}{space 3} .7110126
+{txt}{space 7}n2bm0047 {c |}{col 17}{res}{space 2} .0429417{col 29}{space 2} .0027654{col 40}{space 1}   15.53{col 49}{space 3}0.000{col 57}{space 4} .0375211{col 70}{space 3} .0483623
+{txt}school_complete {c |}{col 17}{res}{space 2}-.1038984{col 29}{space 2} .0124891{col 40}{space 1}   -8.32{col 49}{space 3}0.000{col 57}{space 4}-.1283791{col 70}{space 3}-.0794176
+{txt}{space 10}_cons {c |}{col 17}{res}{space 2} 24.33402{col 29}{space 2} .2636131{col 40}{space 1}   92.31{col 49}{space 3}0.000{col 57}{space 4}  23.8173{col 70}{space 3} 24.85075
+{txt}{hline 16}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+{com}. *** QUESTION 8 *** 
+
+. *** create a categorical variable for obesity based on BMI - If the BMI is > 30 then the person is considered obese according to CDC. ***
+
+. *** code - 1 is Obese ***
+
+. *** code  -0 is not obese ***
+
+. gen obese = 0 
+
+. replace obese = 1 if bmi > = 30 
+{txt}(10,338 real changes made)
+
+{com}. 
+. *** logistic regression (typo in the question, we assumed,we are using the same covariate as Q7)*** 
+
+. logit obese location sex states n2bm0047 school_complete 
+
+{res}{txt}Iteration 0:{space 3}log likelihood = {res:-14078.929}  
+Iteration 1:{space 3}log likelihood = {res:-7594.8125}  
+Iteration 2:{space 3}log likelihood = {res:-7448.8539}  
+Iteration 3:{space 3}log likelihood = {res:-7443.9943}  
+Iteration 4:{space 3}log likelihood = {res:-7443.9899}  
+Iteration 5:{space 3}log likelihood = {res:-7443.9899}  
+{res}
+{txt}Logistic regression{col 49}Number of obs{col 67}= {res}    20,316
+{txt}{col 49}LR chi2({res}5{txt}){col 67}= {res}  13269.88
+{txt}{col 49}Prob > chi2{col 67}= {res}    0.0000
+{txt}Log likelihood = {res}-7443.9899{txt}{col 49}Pseudo R2{col 67}= {res}    0.4713
+
+{txt}{hline 16}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          obese{col 17}{c |}      Coef.{col 29}   Std. Err.{col 41}      z{col 49}   P>|z|{col 57}     [95% Con{col 70}f. Interval]
+{hline 16}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 7}location {c |}{col 17}{res}{space 2}-.0244487{col 29}{space 2} .0463612{col 40}{space 1}   -0.53{col 49}{space 3}0.598{col 57}{space 4}-.1153149{col 70}{space 3} .0664175
+{txt}{space 12}sex {c |}{col 17}{res}{space 2}-.2450383{col 29}{space 2} .0414302{col 40}{space 1}   -5.91{col 49}{space 3}0.000{col 57}{space 4}-.3262401{col 70}{space 3}-.1638366
+{txt}{space 9}states {c |}{col 17}{res}{space 2} .8034992{col 29}{space 2} .0840803{col 40}{space 1}    9.56{col 49}{space 3}0.000{col 57}{space 4} .6387049{col 70}{space 3} .9682935
+{txt}{space 7}n2bm0047 {c |}{col 17}{res}{space 2}-.0635647{col 29}{space 2}  .001092{col 40}{space 1}  -58.21{col 49}{space 3}0.000{col 57}{space 4} -.065705{col 70}{space 3}-.0614243
+{txt}school_complete {c |}{col 17}{res}{space 2}-.2507919{col 29}{space 2} .0051467{col 40}{space 1}  -48.73{col 49}{space 3}0.000{col 57}{space 4}-.2608794{col 70}{space 3}-.2407045
+{txt}{space 10}_cons {c |}{col 17}{res}{space 2} 3.647579{col 29}{space 2} .1024876{col 40}{space 1}   35.59{col 49}{space 3}0.000{col 57}{space 4} 3.446707{col 70}{space 3} 3.848451
+{txt}{hline 16}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. 
+. 
